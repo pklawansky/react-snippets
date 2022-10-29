@@ -4,6 +4,8 @@ import { useState, useRef, MutableRefObject } from 'react';
  * 
  * The MutableRefObject can be used to update the state in cases where timeouts and other initialisation quirks make state assume pre-existing values.
  * 
+ * suppressSetStateIfUnchanged avoids setting the state if the update does not affect the expected value, reducing the cost of rerendering.
+ * 
  * returns [state, updateState, stateRef]
  */
 function useRefState<T>(initialValue: T): [T, (newVal: T | ((newValInner: T) => T), suppressSetStateIfUnchanged?: boolean | undefined) => void, MutableRefObject<T>] {
@@ -21,8 +23,8 @@ function useRefState<T>(initialValue: T): [T, (newVal: T | ((newValInner: T) => 
             ref.current = newVal;
         }
 
-        if (newVal !== state || !suppressSetStateIfUnchanged) {
-            setStateWithHook(newVal);
+        if (ref.current !== state || !suppressSetStateIfUnchanged) {
+            setStateWithHook(ref.current);
         }
     }
 
