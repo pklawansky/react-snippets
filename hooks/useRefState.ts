@@ -10,28 +10,28 @@ import { useState, useRef, MutableRefObject } from 'react';
  */
 function useRefState<T>(initialValue: T): [T, (newVal: T | ((newValInner: T) => T), suppressSetStateIfUnchanged?: boolean | undefined) => void, MutableRefObject<T>] {
 
-    const [state, setStateWithHook] = useState<T>(initialValue);
-    const ref = useRef<T>(initialValue);
+    const [hookState, setHookState] = useState<T>(initialValue);
+    const hookRef = useRef<T>(initialValue);
 
     const setState = (newVal: T | ((newValInner: T) => T), suppressSetStateIfUnchanged: boolean = true) => {
         if (typeof newVal === "function") {
             /* have to cast newVal as a generic Function knowing that it has already been validated by ts when added as a parameter - could result in runtime inconsistencies */
             const newValFunc: Function = newVal;
-            ref.current = newValFunc(ref.current);
+            hookRef.current = newValFunc(hookRef.current);
         } 
         else {
-            ref.current = newVal;
+            hookRef.current = newVal;
         }
 
-        if (ref.current !== state || !suppressSetStateIfUnchanged) {
-            setStateWithHook(ref.current);
+        if (hookRef.current !== hookState || !suppressSetStateIfUnchanged) {
+            setHookState(hookRef.current);
         }
     }
 
     return [
-        state,
+        hookState,
         setState,
-        ref
+        hookRef
     ];
 };
 
