@@ -10,17 +10,17 @@ import styles from '../../../styles/Tests.module.css';
  */
 export default function Tests() {
 
-    const [state1, setState1, ref1] = useRefState<number>(0);
-    const [state2, setState2, ref2] = useRefState<number>(0);
-    const [state3, setState3, ref3] = useRefState<number>(0);
+    const [state1, setState1, getStateValue1] = useRefState<number>(0);
+    const [state2, setState2, getStateValue2] = useRefState<number>(0);
+    const [state3, setState3, getStateValue3] = useRefState<number>(0);
     const [state4, setState4] = useState<number>(0);
 
     useEffect(() => {
         let interval = setInterval(() => {
             setState1(state1 + 1);
-            setState2(ref2.current + 1);
+            setState2(getStateValue2() + 1);
             setState3((_state3: number) => {
-                console.log("state3", state3, "ref3.current", ref3.current);
+                console.log("state3", state3, "getStateValue3()", getStateValue3());
                 return _state3 + 1;
             });
             setState4((_state4: number) => {
@@ -55,18 +55,18 @@ export default function Tests() {
                         <br />
                         state1: {state1}
                         <br />
-                        ref1.current: {ref1.current}
+                        getStateValue1.current: {getStateValue1()}
                     </code>
                     <p className={styles.note}>This is standard bad behaviour from useState hook</p>
                 </div>
 
                 <div className={styles.description}>
                     <code className={styles.code}>
-                        setState2(ref2.current + 1);
+                        setState2(getStateValue2.current + 1);
                         <br />
                         state2: {state2}
                         <br />
-                        ref2.current: {ref2.current}
+                        getStateValue2.current: {getStateValue2()}
                     </code>
                     <p className={styles.note}>Using the ref.current value to update state, is safe to use and gives expected output, can potentially be updated very quickly</p>
                 </div>
@@ -77,7 +77,7 @@ export default function Tests() {
                         <br />
                         state3: {state3}
                         <br />
-                        ref3.current: {ref3.current}
+                        getStateValue3.current: {getStateValue3()}
                     </code>
                     <p className={styles.note}>Replicating syntax for built in state update from useState hooks</p>
                 </div>
